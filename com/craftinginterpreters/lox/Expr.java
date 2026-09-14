@@ -9,8 +9,6 @@ abstract class Expr {
         R visitGroupingExpr(Grouping expr);
         R visitLiteralExpr(Literal expr);
         R visitUnaryExpr(Unary expr);
-
-        // New visitor method for our river flow literal.
         R visitFlowExpr(Flow expr);
     }
 
@@ -76,8 +74,6 @@ abstract class Expr {
         }
     }
 
-    // To represent something like-
-    // flow[10, 6, 2, 0, 0, 0, 0, 0, 0, 0]
     static class Flow extends Expr {
 
         final List<Double> values;
