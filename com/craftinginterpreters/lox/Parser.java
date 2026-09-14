@@ -16,26 +16,72 @@ class Parser {
         this.tokens = tokens;
     }
 
-    Expr parse() {
+    Stmt parse() {
         try {
-            return expression();
+            return riverDeclaration();
         } catch (ParseError error) {
             return null;
         }
     }
 
-    // expression → equality ;
+    // riverDeclaration -> "river" IDENTIFIER "{"
+    //                     "response" ":" flowLiteral ";"
+    //                     "}" ;
+    private Stmt riverDeclaration() {
+        consume(RIVER, "Expect 'river'.");
+
+        Token name = consume(
+            IDENTIFIER,
+            "Expect river name."
+        );
+
+        consume(
+            LEFT_BRACE,
+            "Expect '{' after river name."
+        );
+
+        consume(
+            RESPONSE,
+            "Expect 'response' inside river declaration."
+        );
+
+        consume(
+            COLON,
+            "Expect ':' after 'response'."
+        );
+
+        if (!match(FLOW)) {
+            throw error(
+                peek(),
+                "Expect flow literal after 'response:'."
+            );
+        }
+
+        Expr.Flow response = (Expr.Flow) flowLiteral();
+
+        consume(
+            SEMICOLON,
+            "Expect ';' after flow response."
+        );
+
+        consume(
+            RIGHT_BRACE,
+            "Expect '}' after river declaration."
+        );
+
+        return new Stmt.River(name, response);
+    }
+
+    // expression -> equality ;
     private Expr expression() {
         return equality();
     }
 
-    // equality → comparison ( ( "!=" | "==" ) comparison )* ;
+    // equality -> comparison ( ( "!=" | "==" ) comparison )* ;
     private Expr equality() {
-
         Expr expr = comparison();
 
         while (match(BANG_EQUAL, EQUAL_EQUAL)) {
-
             Token operator = previous();
             Expr right = comparison();
 
@@ -49,9 +95,8 @@ class Parser {
         return expr;
     }
 
-    // comparison → term ( ( ">" | ">=" | "<" | "<=" ) term )* ;
+    // comparison -> term ( ( ">" | ">=" | "<" | "<=" ) term )* ;
     private Expr comparison() {
-
         Expr expr = term();
 
         while (match(
@@ -60,7 +105,6 @@ class Parser {
             LESS,
             LESS_EQUAL
         )) {
-
             Token operator = previous();
             Expr right = term();
 
@@ -74,13 +118,11 @@ class Parser {
         return expr;
     }
 
-    // term → factor ( ( "-" | "+" ) factor )* ;
+    // term -> factor ( ( "-" | "+" ) factor )* ;
     private Expr term() {
-
         Expr expr = factor();
 
         while (match(MINUS, PLUS)) {
-
             Token operator = previous();
             Expr right = factor();
 
@@ -94,13 +136,11 @@ class Parser {
         return expr;
     }
 
-    // factor → unary ( ( "/" | "*" ) unary )* ;
+    // factor -> unary ( ( "/" | "*" ) unary )* ;
     private Expr factor() {
-
         Expr expr = unary();
 
         while (match(SLASH, STAR)) {
-
             Token operator = previous();
             Expr right = unary();
 
@@ -114,11 +154,9 @@ class Parser {
         return expr;
     }
 
-    // unary → ( "!" | "-" ) unary | primary ;
+    // unary -> ( "!" | "-" ) unary | primary ;
     private Expr unary() {
-
         if (match(BANG, MINUS)) {
-
             Token operator = previous();
             Expr right = unary();
 
@@ -131,17 +169,14 @@ class Parser {
         return primary();
     }
 
-    /*
-     * primary → "false"
-     *         | "true"
-     *         | "nil"
-     *         | NUMBER
-     *         | STRING
-     *         | flowLiteral
-     *         | "(" expression ")" ;
-     */
+    // primary -> "false"
+    //          | "true"
+    //          | "nil"
+    //          | NUMBER
+    //          | STRING
+    //          | flowLiteral
+    //          | "(" expression ")" ;
     private Expr primary() {
-
         if (match(FALSE)) {
             return new Expr.Literal(false);
         }
@@ -154,7 +189,6 @@ class Parser {
             return new Expr.Literal(null);
         }
 
-        // River DSL flow literal.
         if (match(FLOW)) {
             return flowLiteral();
         }
@@ -164,7 +198,6 @@ class Parser {
         }
 
         if (match(LEFT_PAREN)) {
-
             Expr expr = expression();
 
             consume(
@@ -181,16 +214,8 @@ class Parser {
         );
     }
 
-    /*
-     * flowLiteral →
-     * "flow" "[" NUMBER ( "," NUMBER )* "]" ;
-     *
-     * Example:
-     * flow[10, 6, 2, 0, 0, 0, 0, 0, 0, 0]
-     */
+    // flowLiteral -> "flow" "[" NUMBER ( "," NUMBER )* "]" ;
     private Expr flowLiteral() {
-
-        // FLOW has already been consumed by primary().
         consume(
             LEFT_SQUARE,
             "Expect '[' after 'flow'."
@@ -198,23 +223,24 @@ class Parser {
 
         List<Double> values = new ArrayList<>();
 
-        // Require at least one number.
         Token firstValue = consume(
             NUMBER,
             "Expect a number inside flow literal."
         );
 
-        values.add((Double) firstValue.literal);
+        values.add(
+            (Double) firstValue.literal
+        );
 
-        // Read further comma-separated numbers.
         while (match(COMMA)) {
-
             Token value = consume(
                 NUMBER,
                 "Expect a number after ','."
             );
 
-            values.add((Double) value.literal);
+            values.add(
+                (Double) value.literal
+            );
         }
 
         consume(
@@ -225,13 +251,9 @@ class Parser {
         return new Expr.Flow(values);
     }
 
-    // Checks whether current token matches any supplied type.
     private boolean match(TokenType... types) {
-
         for (TokenType type : types) {
-
             if (check(type)) {
-
                 advance();
                 return true;
             }
@@ -240,9 +262,7 @@ class Parser {
         return false;
     }
 
-    // Checks current token without consuming it.
     private boolean check(TokenType type) {
-
         if (isAtEnd()) {
             return false;
         }
@@ -250,9 +270,7 @@ class Parser {
         return peek().type == type;
     }
 
-    // Moves forward one token.
     private Token advance() {
-
         if (!isAtEnd()) {
             current++;
         }
@@ -260,27 +278,22 @@ class Parser {
         return previous();
     }
 
-    // Returns true if current token is EOF.
     private boolean isAtEnd() {
         return peek().type == EOF;
     }
 
-    // Current token.
     private Token peek() {
         return tokens.get(current);
     }
 
-    // Most recently consumed token.
     private Token previous() {
         return tokens.get(current - 1);
     }
 
-    // Requires a specific token type.
     private Token consume(
         TokenType type,
         String message
     ) {
-
         if (check(type)) {
             return advance();
         }
@@ -291,12 +304,10 @@ class Parser {
         );
     }
 
-    // Reports parser error.
     private ParseError error(
         Token token,
         String message
     ) {
-
         Lox.error(
             token,
             message
@@ -305,22 +316,15 @@ class Parser {
         return new ParseError();
     }
 
-    /*
-     * Used later when parsing statements.
-     * Helps the parser recover after an error.
-     */
     private void synchronize() {
-
         advance();
 
         while (!isAtEnd()) {
-
             if (previous().type == SEMICOLON) {
                 return;
             }
 
             switch (peek().type) {
-
                 case CLASS:
                 case FUN:
                 case VAR:
@@ -329,6 +333,7 @@ class Parser {
                 case WHILE:
                 case PRINT:
                 case RETURN:
+                case RIVER:
                     return;
             }
 

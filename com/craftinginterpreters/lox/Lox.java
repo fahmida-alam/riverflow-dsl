@@ -63,13 +63,13 @@ public class Lox {
 
     private static void run(String source) {
 
-        // Source → tokens.
+        // Source -> tokens.
         Scanner scanner = new Scanner(source);
         List<Token> tokens = scanner.scanTokens();
 
-        // Tokens → AST.
+        // Tokens -> AST.
         Parser parser = new Parser(tokens);
-        Expr expression = parser.parse();
+        Stmt statement = parser.parse();
 
         if (hadError) {
             return;
@@ -77,7 +77,7 @@ public class Lox {
 
         // Show the AST for now.
         System.out.println(
-            new AstPrinter().print(expression)
+            new AstPrinter().print(statement)
         );
     }
 

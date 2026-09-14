@@ -1,9 +1,19 @@
 package com.craftinginterpreters.lox;
 
-class AstPrinter implements Expr.Visitor<String> {
+class AstPrinter implements Expr.Visitor<String>, Stmt.Visitor<String> {
 
     String print(Expr expr) {
         return expr.accept(this);
+    }
+
+    String print(Stmt stmt) {
+        return stmt.accept(this);
+    }
+
+    @Override
+    public String visitRiverStmt(Stmt.River stmt) {
+        return "(river " + stmt.name.lexeme + " " +
+                stmt.response.accept(this) + ")";
     }
 
     @Override
@@ -17,12 +27,14 @@ class AstPrinter implements Expr.Visitor<String> {
 
     @Override
     public String visitGroupingExpr(Expr.Grouping expr) {
-        return parenthesize("group", expr.expression);
+        return parenthesize(
+            "group",
+            expr.expression
+        );
     }
 
     @Override
     public String visitLiteralExpr(Expr.Literal expr) {
-
         if (expr.value == null) {
             return "nil";
         }
@@ -38,14 +50,11 @@ class AstPrinter implements Expr.Visitor<String> {
         );
     }
 
-    // NEW: Prints the flow literal.
     @Override
     public String visitFlowExpr(Expr.Flow expr) {
-
         StringBuilder result = new StringBuilder("flow[");
 
         for (int i = 0; i < expr.values.size(); i++) {
-
             if (i > 0) {
                 result.append(", ");
             }
@@ -59,7 +68,6 @@ class AstPrinter implements Expr.Visitor<String> {
     }
 
     private String parenthesize(String name, Expr... exprs) {
-
         StringBuilder builder = new StringBuilder();
 
         builder.append("(").append(name);
