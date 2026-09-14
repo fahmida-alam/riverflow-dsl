@@ -33,6 +33,8 @@ class Scanner {
 
         // River language keyword.
         keywords.put("flow", FLOW);
+        keywords.put("river", RIVER);
+        keywords.put("response", RESPONSE);
     }
 
     private final String source;
@@ -94,6 +96,9 @@ class Scanner {
 
             case '.':
                 addToken(DOT);
+                break;
+            case ':':
+                addToken(COLON);
                 break;
 
             case '-':

@@ -7,7 +7,8 @@ enum TokenType {
     LEFT_BRACE, RIGHT_BRACE,
     LEFT_SQUARE, RIGHT_SQUARE,
     COMMA, DOT, MINUS, PLUS,
-    SEMICOLON, SLASH, STAR,
+    SEMICOLON, COLON,
+    SLASH, STAR,
 
     // One or two character tokens.
     BANG, BANG_EQUAL,
@@ -24,8 +25,10 @@ enum TokenType {
     PRINT, RETURN, SUPER, THIS,
     TRUE, VAR, WHILE,
 
-    // River language keywords.
+    // RiverFlow keywords.
     FLOW,
+    RIVER,
+    RESPONSE,
 
     EOF
 }
