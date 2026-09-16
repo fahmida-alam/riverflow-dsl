@@ -31,7 +31,7 @@ class Scanner {
         keywords.put("var", VAR);
         keywords.put("while", WHILE);
 
-        // River language keyword.
+        // River language keywords.
         keywords.put("flow", FLOW);
         keywords.put("river", RIVER);
         keywords.put("response", RESPONSE);
@@ -97,12 +97,21 @@ class Scanner {
             case '.':
                 addToken(DOT);
                 break;
+
             case ':':
                 addToken(COLON);
                 break;
 
             case '-':
-                addToken(MINUS);
+                addToken(match('>') ? RISE : MINUS);
+                break;
+
+            case '@':
+                addToken(AT);
+                break;
+
+            case '~':
+                addToken(RECESSION);
                 break;
 
             case '+':
