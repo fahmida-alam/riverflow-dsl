@@ -29,6 +29,9 @@ enum TokenType {
     FLOW,
     RIVER,
     RESPONSE,
+    RISE,      // ->
+    AT,        // @
+    RECESSION, // ~
 
     EOF
 }
