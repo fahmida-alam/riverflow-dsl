@@ -67,18 +67,22 @@ public class Lox {
         Scanner scanner = new Scanner(source);
         List<Token> tokens = scanner.scanTokens();
 
-        // Tokens -> AST.
+        // Tokens -> AST statements.
         Parser parser = new Parser(tokens);
-        Stmt statement = parser.parse();
+        List<Stmt> statements = parser.parse();
 
         if (hadError) {
             return;
         }
 
-        // Show the AST for now.
-        System.out.println(
-            new AstPrinter().print(statement)
-        );
+        // Show each AST statement for now.
+        AstPrinter printer = new AstPrinter();
+
+        for (Stmt statement : statements) {
+            System.out.println(
+                printer.print(statement)
+            );
+        }
     }
 
     // Scanner error.
