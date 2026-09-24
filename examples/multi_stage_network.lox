@@ -1,0 +1,27 @@
+// Example 2: roots → confluence → river
+//                             ↓
+//                     another confluence → outlet
+
+river Yarra {
+    response: flow[3 -> 22 @ 3 ~ 0.6];
+}
+
+river Plenty {
+    response: flow[2 -> 14 @ 2 ~ 0.5];
+}
+
+river Merri {
+    response: flow[4 -> 17 @ 3 ~ 0.4];
+}
+
+river Maribyrnong {
+    response: flow[3 -> 19 @ 4 ~ 0.6];
+    inflow: Plenty <> Merri;
+}
+
+river Melbourne {
+    response: flow[5 -> 25 @ 3 ~ 0.7];
+    inflow: Yarra <> Maribyrnong;
+}
+
+outlet Melbourne;

@@ -1,3 +1,5 @@
+// Example 1: roots → confluence → outlet
+
 river Nepean {
     response: flow[2 -> 18 @ 3 ~ 0.5];
 }
