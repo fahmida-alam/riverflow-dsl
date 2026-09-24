@@ -132,12 +132,12 @@ class Parser {
         return new Stmt.Outlet(name);
     }
 
-    // confluence -> riverReference ( "<>" riverReference )* ;
+    // confluence -> confluencePrimary ( "<>" confluencePrimary )* ;
     private Expr confluence() {
-        Expr expr = riverReference();
+        Expr expr = confluencePrimary();
 
         while (match(CONFLUENCE)) {
-            Expr right = riverReference();
+            Expr right = confluencePrimary();
 
             expr = new Expr.Confluence(
                 expr,
@@ -148,14 +148,28 @@ class Parser {
         return expr;
     }
 
-    // riverReference -> IDENTIFIER ;
-    private Expr riverReference() {
-        Token name = consume(
-            IDENTIFIER,
-            "Expect river name in inflow."
-        );
+    // confluencePrimary -> IDENTIFIER | "(" confluence ")" ;
+    private Expr confluencePrimary() {
 
-        return new Expr.RiverRef(name);
+        if (match(IDENTIFIER)) {
+            return new Expr.RiverRef(previous());
+        }
+
+        if (match(LEFT_PAREN)) {
+            Expr expr = confluence();
+
+            consume(
+                RIGHT_PAREN,
+                "Expect ')' after grouped inflow."
+            );
+
+            return new Expr.Grouping(expr);
+        }
+
+        throw error(
+            peek(),
+            "Expect river name or '(' in inflow."
+        );
     }
 
     // expression -> equality ;

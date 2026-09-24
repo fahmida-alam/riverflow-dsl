@@ -1,0 +1,29 @@
+// Example 3: grouped confluences in a larger river network
+
+river Murrumbidgee {
+    response: flow[3 -> 20 @ 3 ~ 0.5];
+}
+
+river Molonglo {
+    response: flow[2 -> 14 @ 2 ~ 0.4];
+}
+
+river Cotter {
+    response: flow[4 -> 18 @ 3 ~ 0.6];
+}
+
+river Queanbeyan {
+    response: flow[2 -> 16 @ 3 ~ 0.5];
+}
+
+river Canberra {
+    response: flow[5 -> 28 @ 4 ~ 0.6];
+    inflow: (Molonglo <> Cotter) <> Queanbeyan;
+}
+
+river LowerRiver {
+    response: flow[6 -> 32 @ 4 ~ 0.7];
+    inflow: Murrumbidgee <> Canberra;
+}
+
+outlet LowerRiver;
