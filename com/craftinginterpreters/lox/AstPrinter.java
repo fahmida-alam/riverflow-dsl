@@ -28,6 +28,11 @@ class AstPrinter implements Expr.Visitor<String>, Stmt.Visitor<String> {
     }
 
     @Override
+    public String visitOutletStmt(Stmt.Outlet stmt) {
+        return "(outlet " + stmt.name.lexeme + ")";
+    }
+
+    @Override
     public String visitBinaryExpr(Expr.Binary expr) {
         return parenthesize(
             expr.operator.lexeme,

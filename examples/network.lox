@@ -10,3 +10,5 @@ river Hawkesbury {
     response: flow[3 -> 20 @ 4 ~ 0.6];
     inflow: Nepean <> Grose;
 }
+
+outlet Hawkesbury;

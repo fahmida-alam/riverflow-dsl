@@ -34,7 +34,8 @@ public class GenerateAst {
             outputDir,
             "Stmt",
             Arrays.asList(
-                "River : Token name, Expr.Flow response, Expr inflow"
+                "River  : Token name, Expr.Flow response, Expr inflow",
+                "Outlet : Token name"
             )
         );
     }

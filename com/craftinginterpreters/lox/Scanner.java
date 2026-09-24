@@ -36,6 +36,7 @@ class Scanner {
         keywords.put("river", RIVER);
         keywords.put("response", RESPONSE);
         keywords.put("inflow", INFLOW);
+        keywords.put("outlet", OUTLET);
     }
 
     private final String source;

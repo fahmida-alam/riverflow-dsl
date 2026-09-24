@@ -16,13 +16,13 @@ class Parser {
         this.tokens = tokens;
     }
 
-    // program -> riverDeclaration* EOF ;
+    // program -> declaration* EOF ;
     List<Stmt> parse() {
         List<Stmt> statements = new ArrayList<>();
 
         while (!isAtEnd()) {
             try {
-                statements.add(riverDeclaration());
+                statements.add(declaration());
             } catch (ParseError error) {
                 synchronize();
             }
@@ -31,12 +31,28 @@ class Parser {
         return statements;
     }
 
-    // riverDeclaration -> "river" IDENTIFIER "{"
+    // declaration -> riverDeclaration | outletStatement ;
+    private Stmt declaration() {
+
+        if (match(RIVER)) {
+            return riverDeclaration();
+        }
+
+        if (match(OUTLET)) {
+            return outletStatement();
+        }
+
+        throw error(
+            peek(),
+            "Expect 'river' or 'outlet'."
+        );
+    }
+
+    // riverDeclaration -> IDENTIFIER "{"
     //                     "response" ":" flowLiteral ";"
     //                     ( "inflow" ":" confluence ";" )?
     //                     "}" ;
     private Stmt riverDeclaration() {
-        consume(RIVER, "Expect 'river'.");
 
         Token name = consume(
             IDENTIFIER,
@@ -98,6 +114,22 @@ class Parser {
             response,
             inflow
         );
+    }
+
+    // outletStatement -> IDENTIFIER ";" ;
+    private Stmt outletStatement() {
+
+        Token name = consume(
+            IDENTIFIER,
+            "Expect river name after 'outlet'."
+        );
+
+        consume(
+            SEMICOLON,
+            "Expect ';' after outlet."
+        );
+
+        return new Stmt.Outlet(name);
     }
 
     // confluence -> riverReference ( "<>" riverReference )* ;
@@ -231,6 +263,7 @@ class Parser {
     //          | flowLiteral
     //          | "(" expression ")" ;
     private Expr primary() {
+
         if (match(FALSE)) {
             return new Expr.Literal(false);
         }
@@ -270,6 +303,7 @@ class Parser {
 
     // flowLiteral -> "flow" "[" NUMBER "->" NUMBER "@" NUMBER "~" NUMBER "]" ;
     private Expr.Flow flowLiteral() {
+
         consume(
             LEFT_SQUARE,
             "Expect '[' after 'flow'."
@@ -324,6 +358,7 @@ class Parser {
     }
 
     private boolean match(TokenType... types) {
+
         for (TokenType type : types) {
             if (check(type)) {
                 advance();
@@ -335,6 +370,7 @@ class Parser {
     }
 
     private boolean check(TokenType type) {
+
         if (isAtEnd()) {
             return false;
         }
@@ -343,6 +379,7 @@ class Parser {
     }
 
     private Token advance() {
+
         if (!isAtEnd()) {
             current++;
         }
@@ -366,6 +403,7 @@ class Parser {
         TokenType type,
         String message
     ) {
+
         if (check(type)) {
             return advance();
         }
@@ -380,6 +418,7 @@ class Parser {
         Token token,
         String message
     ) {
+
         Lox.error(
             token,
             message
@@ -389,9 +428,11 @@ class Parser {
     }
 
     private void synchronize() {
+
         advance();
 
         while (!isAtEnd()) {
+
             if (previous().type == SEMICOLON) {
                 return;
             }
@@ -406,6 +447,7 @@ class Parser {
                 case PRINT:
                 case RETURN:
                 case RIVER:
+                case OUTLET:
                     return;
             }
 

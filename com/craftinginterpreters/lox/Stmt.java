@@ -5,6 +5,7 @@ abstract class Stmt {
 
     interface Visitor<R> {
         R visitRiverStmt(River stmt);
+        R visitOutletStmt(Outlet stmt);
     }
 
     static class River extends Stmt {
@@ -22,6 +23,20 @@ abstract class Stmt {
         @Override
         <R> R accept(Visitor<R> visitor) {
             return visitor.visitRiverStmt(this);
+        }
+    }
+
+    static class Outlet extends Stmt {
+
+        final Token name;
+
+        Outlet(Token name) {
+            this.name = name;
+        }
+
+        @Override
+        <R> R accept(Visitor<R> visitor) {
+            return visitor.visitOutletStmt(this);
         }
     }
 
