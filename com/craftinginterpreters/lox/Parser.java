@@ -1,6 +1,5 @@
 package com.craftinginterpreters.lox;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.craftinginterpreters.lox.TokenType.*;
@@ -57,7 +56,7 @@ class Parser {
             );
         }
 
-        Expr.Flow response = (Expr.Flow) flowLiteral();
+        Expr.Flow response = flowLiteral();
 
         consume(
             SEMICOLON,
@@ -214,41 +213,59 @@ class Parser {
         );
     }
 
-    // flowLiteral -> "flow" "[" NUMBER ( "," NUMBER )* "]" ;
-    private Expr flowLiteral() {
+    // flowLiteral -> "flow" "[" NUMBER "->" NUMBER "@" NUMBER "~" NUMBER "]" ;
+    private Expr.Flow flowLiteral() {
         consume(
             LEFT_SQUARE,
             "Expect '[' after 'flow'."
         );
 
-        List<Double> values = new ArrayList<>();
-
-        Token firstValue = consume(
+        Token start = consume(
             NUMBER,
-            "Expect a number inside flow literal."
+            "Expect starting flow."
         );
 
-        values.add(
-            (Double) firstValue.literal
+        consume(
+            RISE,
+            "Expect '->' after starting flow."
         );
 
-        while (match(COMMA)) {
-            Token value = consume(
-                NUMBER,
-                "Expect a number after ','."
-            );
+        Token peak = consume(
+            NUMBER,
+            "Expect peak flow after '->'."
+        );
 
-            values.add(
-                (Double) value.literal
-            );
-        }
+        consume(
+            AT,
+            "Expect '@' after peak flow."
+        );
+
+        Token day = consume(
+            NUMBER,
+            "Expect peak day after '@'."
+        );
+
+        consume(
+            RECESSION,
+            "Expect '~' after peak day."
+        );
+
+        Token recession = consume(
+            NUMBER,
+            "Expect recession factor after '~'."
+        );
 
         consume(
             RIGHT_SQUARE,
-            "Expect ']' after flow values."
+            "Expect ']' after flow literal."
         );
 
-        return new Expr.Flow(values);
+        return new Expr.Flow(
+            (Double) start.literal,
+            (Double) peak.literal,
+            (Double) day.literal,
+            (Double) recession.literal
+        );
     }
 
     private boolean match(TokenType... types) {
