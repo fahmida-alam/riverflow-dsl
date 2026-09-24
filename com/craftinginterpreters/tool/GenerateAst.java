@@ -20,11 +20,13 @@ public class GenerateAst {
             outputDir,
             "Expr",
             Arrays.asList(
-                "Binary   : Expr left, Token operator, Expr right",
-                "Grouping : Expr expression",
-                "Literal  : Object value",
-                "Unary    : Token operator, Expr right",
-                "Flow     : double startFlow, double peakFlow, double peakDay, double recession"
+                "Binary     : Expr left, Token operator, Expr right",
+                "Grouping   : Expr expression",
+                "Literal    : Object value",
+                "Unary      : Token operator, Expr right",
+                "Flow       : double startFlow, double peakFlow, double peakDay, double recession",
+                "RiverRef   : Token name",
+                "Confluence : Expr left, Expr right"
             )
         );
 
@@ -32,7 +34,7 @@ public class GenerateAst {
             outputDir,
             "Stmt",
             Arrays.asList(
-                "River : Token name, Expr.Flow response"
+                "River : Token name, Expr.Flow response, Expr inflow"
             )
         );
     }

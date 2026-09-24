@@ -12,8 +12,19 @@ class AstPrinter implements Expr.Visitor<String>, Stmt.Visitor<String> {
 
     @Override
     public String visitRiverStmt(Stmt.River stmt) {
-        return "(river " + stmt.name.lexeme + " " +
-                stmt.response.accept(this) + ")";
+
+        String result =
+            "(river " +
+            stmt.name.lexeme +
+            " " +
+            stmt.response.accept(this);
+
+        if (stmt.inflow != null) {
+            result += " inflow " +
+                      stmt.inflow.accept(this);
+        }
+
+        return result + ")";
     }
 
     @Override
@@ -35,6 +46,7 @@ class AstPrinter implements Expr.Visitor<String>, Stmt.Visitor<String> {
 
     @Override
     public String visitLiteralExpr(Expr.Literal expr) {
+
         if (expr.value == null) {
             return "nil";
         }
@@ -63,14 +75,35 @@ class AstPrinter implements Expr.Visitor<String>, Stmt.Visitor<String> {
                 "]";
     }
 
-    private String parenthesize(String name, Expr... exprs) {
-        StringBuilder builder = new StringBuilder();
+    @Override
+    public String visitRiverRefExpr(Expr.RiverRef expr) {
+        return expr.name.lexeme;
+    }
+
+    @Override
+    public String visitConfluenceExpr(Expr.Confluence expr) {
+        return "(<> " +
+                expr.left.accept(this) +
+                " " +
+                expr.right.accept(this) +
+                ")";
+    }
+
+    private String parenthesize(
+        String name,
+        Expr... exprs
+    ) {
+
+        StringBuilder builder =
+            new StringBuilder();
 
         builder.append("(").append(name);
 
         for (Expr expr : exprs) {
             builder.append(" ");
-            builder.append(expr.accept(this));
+            builder.append(
+                expr.accept(this)
+            );
         }
 
         builder.append(")");

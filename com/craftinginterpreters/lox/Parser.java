@@ -1,5 +1,6 @@
 package com.craftinginterpreters.lox;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.craftinginterpreters.lox.TokenType.*;
@@ -15,16 +16,24 @@ class Parser {
         this.tokens = tokens;
     }
 
-    Stmt parse() {
-        try {
-            return riverDeclaration();
-        } catch (ParseError error) {
-            return null;
+    // program -> riverDeclaration* EOF ;
+    List<Stmt> parse() {
+        List<Stmt> statements = new ArrayList<>();
+
+        while (!isAtEnd()) {
+            try {
+                statements.add(riverDeclaration());
+            } catch (ParseError error) {
+                synchronize();
+            }
         }
+
+        return statements;
     }
 
     // riverDeclaration -> "river" IDENTIFIER "{"
     //                     "response" ":" flowLiteral ";"
+    //                     ( "inflow" ":" confluence ";" )?
     //                     "}" ;
     private Stmt riverDeclaration() {
         consume(RIVER, "Expect 'river'.");
@@ -63,12 +72,58 @@ class Parser {
             "Expect ';' after flow response."
         );
 
+        Expr inflow = null;
+
+        if (match(INFLOW)) {
+            consume(
+                COLON,
+                "Expect ':' after 'inflow'."
+            );
+
+            inflow = confluence();
+
+            consume(
+                SEMICOLON,
+                "Expect ';' after inflow."
+            );
+        }
+
         consume(
             RIGHT_BRACE,
             "Expect '}' after river declaration."
         );
 
-        return new Stmt.River(name, response);
+        return new Stmt.River(
+            name,
+            response,
+            inflow
+        );
+    }
+
+    // confluence -> riverReference ( "<>" riverReference )* ;
+    private Expr confluence() {
+        Expr expr = riverReference();
+
+        while (match(CONFLUENCE)) {
+            Expr right = riverReference();
+
+            expr = new Expr.Confluence(
+                expr,
+                right
+            );
+        }
+
+        return expr;
+    }
+
+    // riverReference -> IDENTIFIER ;
+    private Expr riverReference() {
+        Token name = consume(
+            IDENTIFIER,
+            "Expect river name in inflow."
+        );
+
+        return new Expr.RiverRef(name);
     }
 
     // expression -> equality ;

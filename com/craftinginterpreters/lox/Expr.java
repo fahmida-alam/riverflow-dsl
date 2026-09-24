@@ -9,6 +9,8 @@ abstract class Expr {
         R visitLiteralExpr(Literal expr);
         R visitUnaryExpr(Unary expr);
         R visitFlowExpr(Flow expr);
+        R visitRiverRefExpr(RiverRef expr);
+        R visitConfluenceExpr(Confluence expr);
     }
 
     static class Binary extends Expr {
@@ -90,6 +92,36 @@ abstract class Expr {
         @Override
         <R> R accept(Visitor<R> visitor) {
             return visitor.visitFlowExpr(this);
+        }
+    }
+
+    static class RiverRef extends Expr {
+
+        final Token name;
+
+        RiverRef(Token name) {
+            this.name = name;
+        }
+
+        @Override
+        <R> R accept(Visitor<R> visitor) {
+            return visitor.visitRiverRefExpr(this);
+        }
+    }
+
+    static class Confluence extends Expr {
+
+        final Expr left;
+        final Expr right;
+
+        Confluence(Expr left, Expr right) {
+            this.left = left;
+            this.right = right;
+        }
+
+        @Override
+        <R> R accept(Visitor<R> visitor) {
+            return visitor.visitConfluenceExpr(this);
         }
     }
 

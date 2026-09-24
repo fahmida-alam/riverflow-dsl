@@ -11,10 +11,12 @@ abstract class Stmt {
 
         final Token name;
         final Expr.Flow response;
+        final Expr inflow;
 
-        River(Token name, Expr.Flow response) {
+        River(Token name, Expr.Flow response, Expr inflow) {
             this.name = name;
             this.response = response;
+            this.inflow = inflow;
         }
 
         @Override
