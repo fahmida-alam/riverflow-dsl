@@ -52,19 +52,15 @@ class AstPrinter implements Expr.Visitor<String>, Stmt.Visitor<String> {
 
     @Override
     public String visitFlowExpr(Expr.Flow expr) {
-        StringBuilder result = new StringBuilder("flow[");
-
-        for (int i = 0; i < expr.values.size(); i++) {
-            if (i > 0) {
-                result.append(", ");
-            }
-
-            result.append(expr.values.get(i));
-        }
-
-        result.append("]");
-
-        return result.toString();
+        return "flow[" +
+                expr.startFlow +
+                " -> " +
+                expr.peakFlow +
+                " @ " +
+                expr.peakDay +
+                " ~ " +
+                expr.recession +
+                "]";
     }
 
     private String parenthesize(String name, Expr... exprs) {
