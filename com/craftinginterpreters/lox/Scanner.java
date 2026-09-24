@@ -35,6 +35,7 @@ class Scanner {
         keywords.put("flow", FLOW);
         keywords.put("river", RIVER);
         keywords.put("response", RESPONSE);
+        keywords.put("inflow", INFLOW);
     }
 
     private final String source;
@@ -135,7 +136,11 @@ class Scanner {
                 break;
 
             case '<':
-                addToken(match('=') ? LESS_EQUAL : LESS);
+                if (match('>')) {
+                    addToken(CONFLUENCE);
+                } else {
+                    addToken(match('=') ? LESS_EQUAL : LESS);
+                }
                 break;
 
             case '>':
