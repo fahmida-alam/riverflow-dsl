@@ -1,6 +1,4 @@
-// Example 2: roots → confluence → river
-//                             ↓
-//                     another confluence → outlet
+// Example 2: multi-stage confluences across a larger river network
 
 river Yarra {
     response: flow[3 -> 22 @ 3 ~ 0.6];

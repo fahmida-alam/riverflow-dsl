@@ -1,4 +1,4 @@
-// Example 1: roots → confluence → outlet
+// Example 1: basic confluence of two root rivers into a downstream river
 
 river Nepean {
     response: flow[2 -> 18 @ 3 ~ 0.5];
