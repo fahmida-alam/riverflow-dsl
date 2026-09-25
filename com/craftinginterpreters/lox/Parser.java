@@ -91,6 +91,7 @@ class Parser {
         Expr inflow = null;
 
         if (match(INFLOW)) {
+
             consume(
                 COLON,
                 "Expect ':' after 'inflow'."
@@ -134,9 +135,11 @@ class Parser {
 
     // confluence -> confluencePrimary ( "<>" confluencePrimary )* ;
     private Expr confluence() {
+
         Expr expr = confluencePrimary();
 
         while (match(CONFLUENCE)) {
+
             Expr right = confluencePrimary();
 
             expr = new Expr.Confluence(
@@ -156,6 +159,7 @@ class Parser {
         }
 
         if (match(LEFT_PAREN)) {
+
             Expr expr = confluence();
 
             consume(
@@ -179,9 +183,11 @@ class Parser {
 
     // equality -> comparison ( ( "!=" | "==" ) comparison )* ;
     private Expr equality() {
+
         Expr expr = comparison();
 
         while (match(BANG_EQUAL, EQUAL_EQUAL)) {
+
             Token operator = previous();
             Expr right = comparison();
 
@@ -197,6 +203,7 @@ class Parser {
 
     // comparison -> term ( ( ">" | ">=" | "<" | "<=" ) term )* ;
     private Expr comparison() {
+
         Expr expr = term();
 
         while (match(
@@ -205,6 +212,7 @@ class Parser {
             LESS,
             LESS_EQUAL
         )) {
+
             Token operator = previous();
             Expr right = term();
 
@@ -220,9 +228,11 @@ class Parser {
 
     // term -> factor ( ( "-" | "+" ) factor )* ;
     private Expr term() {
+
         Expr expr = factor();
 
         while (match(MINUS, PLUS)) {
+
             Token operator = previous();
             Expr right = factor();
 
@@ -238,9 +248,11 @@ class Parser {
 
     // factor -> unary ( ( "/" | "*" ) unary )* ;
     private Expr factor() {
+
         Expr expr = unary();
 
         while (match(SLASH, STAR)) {
+
             Token operator = previous();
             Expr right = unary();
 
@@ -256,7 +268,9 @@ class Parser {
 
     // unary -> ( "!" | "-" ) unary | primary ;
     private Expr unary() {
+
         if (match(BANG, MINUS)) {
+
             Token operator = previous();
             Expr right = unary();
 
@@ -299,6 +313,7 @@ class Parser {
         }
 
         if (match(LEFT_PAREN)) {
+
             Expr expr = expression();
 
             consume(
@@ -374,6 +389,7 @@ class Parser {
     private boolean match(TokenType... types) {
 
         for (TokenType type : types) {
+
             if (check(type)) {
                 advance();
                 return true;
@@ -451,18 +467,8 @@ class Parser {
                 return;
             }
 
-            switch (peek().type) {
-                case CLASS:
-                case FUN:
-                case VAR:
-                case FOR:
-                case IF:
-                case WHILE:
-                case PRINT:
-                case RETURN:
-                case RIVER:
-                case OUTLET:
-                    return;
+            if (peek().type == RIVER || peek().type == OUTLET) {
+                return;
             }
 
             advance();
