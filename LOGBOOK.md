@@ -148,56 +148,6 @@ designed to communicate both its value and its domain-specific meaning clearly.
 
 ### Before the workshop
 
-I attended the Week 5 lecture and read Chapter 5 of *Crafting Interpreters*. I
-followed the AST implementation in the book and learned how expressions can be
-represented as tree structures rather than a flat sequence of tokens. I also
-prepared for the iRAT and tRAT.
-
-### During the workshop
-
-I completed iRAT 5 and participated in the tRAT. For the application exercise,
-my team explored how separate rivers could be combined to represent a larger
-river network.
-
-We represented river combinations as expression trees and discussed how
-parentheses change the structure. For example:
-
-`A + (B + C)`
-
-means B and C combine first before joining A, while:
-
-`(A + B) + C`
-
-represents A and B combining first.
-
-We also discussed different symbols for representing river connections. This
-made me realise that using `+` is simple, but a dedicated operator could make
-the topology of the river network clearer.
-
-### After the workshop
-
-I continued Chapter 5 by working with AST classes and the Visitor pattern. I
-also used `AstPrinter` to make the tree structure visible, which helped me see
-how nested source expressions become nested AST nodes.
-
-This later influenced my Assignment 1 design, where I used `<>` as a dedicated
-confluence operator rather than treating river combination as normal
-arithmetic addition.
-
-### What I learned
-
-The main thing I learned was that the structure of the AST matters. Two
-expressions can contain the same rivers but describe different networks
-depending on how they are grouped. I also understood why choosing syntax that
-reflects the underlying tree can make a domain-specific language easier to
-understand.
-
-## Week 5 - Representing Code
-
-**Logbook entry date:** 25 August 2026
-
-### Before the workshop
-
 I attended the Week 5 lecture, read Chapter 5 of *Crafting Interpreters*, and
 followed the AST implementation in my own Lox project. I prepared for the iRAT
 and tRAT by reviewing expression trees, context-free grammars, and how
