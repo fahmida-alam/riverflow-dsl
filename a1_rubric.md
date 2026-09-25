@@ -106,7 +106,7 @@ Which file in the zip are your log-book entries and when did you make them?  You
 
 My learning log is provided as `LOGBOOK.md` in the top-level submission folder.
 A PDF export of my working development log is also included at
-`logbook-evidence/COMP3000_Development_Log.pdf` as supporting evidence.
+`logbook-evidence/COMP3000_logbook.pdf` as supporting evidence.
 
 I maintained the log progressively during the semester, with entries currently
 covering Weeks 1-8. The individual entries include their logbook entry dates,
@@ -145,6 +145,18 @@ flowLiteral       -> "flow" "["
                      NUMBER "~"
                      NUMBER
                      "]" ;
+
+IDENTIFIER       -> ALPHA ALPHANUMERIC* ;
+
+NUMBER           -> DIGIT+ ( "." DIGIT+ )? ;
+
+ALPHA            -> "a" ... "z"
+                  | "A" ... "Z"
+                  | "_" ;
+
+ALPHANUMERIC     -> ALPHA | DIGIT ;
+
+DIGIT            -> "0" ... "9" ;
 ```
 
 A `program` consists of zero or more declarations followed by the end of the file (EOF). A declaration can either define a river or identify the final outlet.
@@ -401,7 +413,7 @@ I extended the Chapter 6 implementation to parse complete RiverFlow programs rat
 The main additions are:
 
 1. **Multiple declarations:** `Parser.parse()` parses a complete program
-   containing multiple river declarations followed by an outlet declaration.
+   containing multiple declarations, including river declarations and outlet statements.
 
 2. **River statements:** `Stmt.River` represents a named river and stores its
    required flow response and optional upstream inflow.
