@@ -386,7 +386,7 @@ COMP3000_Assignment1/
 │   └── grouped_confluence.lox
 │
 ├── logbook-evidence/
-│   ├── COMP3000 logbook.pdf
+│   ├── COMP3000_logbook.pdf
 │   ├── week-03-logo-graphics.png
 │   └── week-03-lox-playground.png
 │
