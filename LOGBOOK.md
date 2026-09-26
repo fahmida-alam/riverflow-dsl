@@ -308,6 +308,7 @@ including expression statements, print statements and variable declarations.
 One example I worked through was:
 
 `var x = 3;`
+
 `print x;`
 
 This helped me distinguish between declaring a variable and later using that
@@ -316,15 +317,80 @@ variable inside an expression.
 I also discussed how adding a new statement affects several parts of an
 interpreter, including the grammar, parser, generated AST and Visitor methods.
 
-### Assignment 1 presentation
+### Assignment 1 Showcase
 
 For the optional Assignment 1 presentation, I submitted
 `RiverFlow Week 8.pdf` and presented my current RiverFlow language design.
 
 I explained my current thinking about representing river responses, combining
-upstream rivers, and how the source code would be converted into an AST. This
-was useful because I could compare my design with approaches being developed
-by other students and identify areas I wanted to improve before Submission 1.
+upstream rivers, and how the source code would be converted into an AST.
+
+I also took notes on other presentations during the showcase. One presentation
+used a peak-day approach for modelling river flow. Instead of representing
+every day of the response separately, the design identified when the flow
+reached its peak. I found this interesting because my RiverFlow design at this
+stage was still based on representing flow over a 10-day period.
+
+Another presentation showed how multiple rivers could combine progressively.
+Smaller rivers could first combine into one river, and that resulting river
+could then join another river before eventually flowing into the main
+downstream river. I liked this approach because it naturally represented a
+river network as a tree.
+
+### Technique I Would Consider
+
+The peak-day approach was a technique that I wanted to consider for my own
+language. It provided a more compact way of describing the important shape of
+a river response instead of explicitly representing all ten days.
+
+I later incorporated this idea into RiverFlow. My final flow syntax represents
+a starting flow, peak flow, peak day and recession factor. For example:
+
+`flow[3 -> 20 @ 4 ~ 0.6]`
+
+### Reflection on My Own Work
+
+At this stage, I felt that the overall RiverFlow idea was progressing well. I
+had a clear problem domain and was starting to connect the language design to
+scanning, ASTs and parsing. I also had an approach for representing how
+different rivers connect to form a larger river network.
+
+The main area that still needed attention before Assignment 1 was the flow
+representation. My existing 10-day approach worked, but it was more detailed
+than necessary and I wanted a clearer and more compact representation.
+
+The showcase gave me another way to think about this problem. After further
+development, I replaced the 10-day representation with the peak-day-based
+design used in my final Assignment 1 language.
+
+### After the workshop
+
+I continued developing Assignment 1 using the Lox codebase. Another important
+idea from this week was that RiverFlow should not only contain expressions.
+
+A river declaration describes a river and its response, while an outlet
+identifies the final river of the network. This influenced my later use of
+statement nodes such as `Stmt.River` and `Stmt.Outlet`, while flow and
+confluence structures are represented as expressions.
+
+### What I Learned
+
+I learned that expressions produce values, while statements describe actions
+or larger pieces of program structure.
+
+This distinction became important in my RiverFlow design:
+
+- `flow[...]` and river confluences are expressions.
+- `river ... { ... }` and `outlet ...;` are statements.
+
+I also learned from the Assignment 1 showcase that seeing other approaches can
+help identify weaknesses in my own design. In particular, the peak-day idea
+helped me rethink my original 10-day flow representation, while the progressive
+river-combination approach reinforced how useful a tree structure is for
+representing a river network.
+
+These ideas helped give my final RiverFlow language a clearer and more compact
+structure.
 
 ### After the workshop
 
